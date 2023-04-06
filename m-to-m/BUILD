@@ -2,6 +2,7 @@ load("//tools:defaults.bzl", "app_bundle", "http_server", "ng_module")
 
 package(default_visibility = ["//visibility:public"])
 
+LCM = True
 
 ng_module(
     name = "sub",
@@ -10,7 +11,7 @@ ng_module(
     deps = [
         "//packages/core",
     ],
-    local_compilation_mode = True,
+    local_compilation_mode = LCM,
 )
 
 ng_module(
@@ -22,7 +23,7 @@ ng_module(
         ":sub",
         "//packages/core",
     ],
-    local_compilation_mode = True,
+    local_compilation_mode = LCM,
 )
 
 ng_module(
@@ -35,7 +36,7 @@ ng_module(
         "//packages/platform-browser",
         "//packages/platform-browser-dynamic",
     ],
-    local_compilation_mode = True,
+    local_compilation_mode = LCM,
 )
 
 app_bundle(
