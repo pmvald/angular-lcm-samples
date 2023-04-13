@@ -1,10 +1,11 @@
-load("//tools:defaults.bzl", "app_bundle", "http_server", "ng_module")
+load("//tools:defaults.bzl", "app_bundle", "http_server")
+load("//samples/bazel:ng_module.bzl", "ng_module_pv")
 
 package(default_visibility = ["//visibility:public"])
 
 LCM = True
 
-ng_module(
+ng_module_pv(
     name = "sub",
     srcs = ["sub.ts"],
     tsconfig = ":tsconfig.json",
@@ -14,7 +15,7 @@ ng_module(
     local_compilation_mode = LCM,
 )
 
-ng_module(
+ng_module_pv(
     name = "main",
     srcs = ["main.ts"],
     assets = ["main.ng.html"],
@@ -26,7 +27,7 @@ ng_module(
     local_compilation_mode = LCM,
 )
 
-ng_module(
+ng_module_pv(
     name = "app",
     srcs = ["app.ts"],
     tsconfig = ":tsconfig.json",
