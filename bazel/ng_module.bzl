@@ -38,7 +38,7 @@ def _is_partial_compilation_enabled(ctx):
 def _get_ivy_compilation_mode(ctx):
     """Gets the Ivy compilation mode based on the current build settings."""
     if getattr(ctx.attr, "local_compilation_mode", False):
-        return "local"
+        return "experimental-local"
     return "partial" if _is_partial_compilation_enabled(ctx) else "full"
 
 # Return true if run with bazel (the open-sourced version of blaze), false if
@@ -266,7 +266,7 @@ def ngc_compile_action(
     )
 
     supports_workers = "0"
-    local = "0"
+    local = "1"
 
     if locale:
         mnemonic = "AngularI18NMerging"
@@ -274,9 +274,10 @@ def ngc_compile_action(
                             (target_flavor, label, locale))
     elif getattr(ctx.attr, "local_compilation_mode", False):
         mnemonic = "AngularTemplateCompileLCM"
-        local = "1"
-    else:
-        supports_workers = str(int(ctx.attr._supports_workers))
+        #local = "1"
+    #else:
+        #supports_workers = str(int(ctx.attr._supports_workers))
+        #local = "1"
 
     arguments = (list(_EXTRA_NODE_OPTIONS_FLAGS) +
                  ["--node_options=%s" % opt for opt in node_opts])
