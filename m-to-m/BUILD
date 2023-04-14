@@ -1,5 +1,5 @@
 load("//tools:defaults.bzl", "app_bundle", "http_server")
-load("//samples/bazel:ng_module.bzl", "ng_module_pv")
+load("//integration/bazel/bazel-samples/bazel:ng_module.bzl", "ng_module_pv")
 
 package(default_visibility = ["//visibility:public"])
 
