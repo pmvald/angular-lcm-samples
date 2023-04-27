@@ -1,4 +1,4 @@
-load("//tools:defaults.bzl", "app_bundle", "http_server")
+load("//tools:defaults.bzl", "esbuild", "http_server")
 load("//integration/bazel/bazel-samples/bazel:ng_module.bzl", "ng_module_pv")
 
 package(default_visibility = ["//visibility:public"])
@@ -40,9 +40,15 @@ ng_module_pv(
     local_compilation_mode = LCM,
 )
 
-app_bundle(
-    name = "app_bundle",
+esbuild(
+    name = "bundle",
     entry_point = ":app.ts",
+    external = [
+        "@angular-devkit/*",
+        "typescript",
+    ],
+    format = "iife",
+    platform = "browser",
     deps = [":app"],
 )
 
@@ -52,7 +58,7 @@ http_server(
         "index.html",
     ],
     deps = [
-        ":app_bundle",
+        ":bundle",
         "//packages/zone.js/bundles:zone.umd.js",
     ],
 )

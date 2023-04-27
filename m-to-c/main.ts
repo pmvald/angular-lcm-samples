@@ -10,5 +10,5 @@ import {SubModule} from './sub';
   imports: [SubModule],
 })
 export class Main {
-  x = 'Dolly';
+  x = 'Angular';
 }
