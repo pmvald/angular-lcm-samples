@@ -14,7 +14,8 @@ export class Main {
 @NgModule({
   declarations: [Main],
   imports: [SubModule],
-  exports: [Main],
+  exports: [Main, SubModule],
 })
 export class MainModule {
 }
+console.log(" __HAHA__ MAIN ");

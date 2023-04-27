@@ -18,6 +18,6 @@ export class App {}
 })
 export class AppModule {
 }
-
+console.log(" __HAHA__ APP ");
 platformBrowserDynamic().bootstrapModule(AppModule);
 
