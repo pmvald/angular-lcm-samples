@@ -8,7 +8,7 @@ import {SubModule} from './sub';
   templateUrl: './main.ng.html',
 })
 export class Main {
-  x = 'Dolly';
+  x = 'Angular';
 }
 
 @NgModule({
@@ -18,4 +18,3 @@ export class Main {
 })
 export class MainModule {
 }
-console.log(" __HAHA__ MAIN ");
