@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 
 @Injectable({providedIn: 'root'})
-export class SubService {
+export default class SubService {
   getMessage(): string {
-    return 'Hello';
+    return 'Angular';
   }
 }
