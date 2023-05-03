@@ -329,23 +329,40 @@ def _get_short_path_without_ext(file):
     ext = ".".join(file.basename.split(".")[1::])
     return file.short_path[:-len(ext)]
 
+def _is_output_of(input_file, output_file):
+    if _is_non_js_file(output_file):
+        return False
+    
+    return _get_short_path_without_ext(input_file) == _get_short_path_without_ext(output_file)
+
+def _create_dummy_file_for_non_js_files(ctx, outputs):
+    for f in outputs:
+        if not _is_non_js_file(f):
+            continue
+
+        ctx.actions.write(f, "HAHA!")
+
+
+def _is_non_js_file(f):
+    return f.extension != "ts" and f.extension != "js" and f.extension != "mjs"
+
 def _compile_action_lcm(
         ctx,
         inputs,
         outputs,
         tsconfig_file,
         node_opts,
-        target_flavor):
+        target_flavor):   
+    _create_dummy_file_for_non_js_files(ctx, outputs)
+
     groups = []
 
     for input_file in ctx.files.srcs:
         if input_file.short_path.endswith(".d.ts"):
             continue
 
-        basename = _get_short_path_without_ext(input_file)
-
         group_inputs = [input_file, tsconfig_file] + ctx.files.assets
-        group_outputs = [f for f in outputs if _get_short_path_without_ext(f) == basename]
+        group_outputs = [f for f in outputs if _is_output_of(input_file, f)]
 
         # additional deps
         if hasattr(ctx.attr, "node_modules"):
@@ -417,7 +434,8 @@ def _devmode_compile_action(ctx, inputs, outputs, tsconfig_file, node_opts):
 # them and Starlark would otherwise error at runtime.
 # buildifier: disable=unused-variable
 def _ts_expected_outs(ctx, label, srcs_files = []):
-    return _expected_outs(ctx)
+    ans = _expected_outs(ctx)
+    return ans
 
 def ng_module_impl(ctx, ts_compile_actions):
     """Implementation function for the ng_module rule.
