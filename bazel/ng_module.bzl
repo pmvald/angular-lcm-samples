@@ -675,7 +675,7 @@ _DEFAULT_TSCONFIG_TEST = "//packages:tsconfig-test"
 _INTERNAL_NG_MODULE_COMPILER = "//packages/bazel/src/ngc-wrapped"
 _INTERNAL_NG_MODULE_XI18N = "//packages/bazel/src/ngc-wrapped:xi18n"
 
-def ng_module_pv(name, tsconfig = None, entry_point = None, testonly = False, deps = [], module_name = None, package_name = None, **kwargs):
+def ng_module_pv(name, srcs = None,tsconfig = None, entry_point = None, testonly = False, deps = [], module_name = None, package_name = None, local_compilation_mode = False, **kwargs):
     """Default values for ng_module"""
     deps = deps + ["@npm//tslib"]
     if testonly:
@@ -696,23 +696,72 @@ def ng_module_pv(name, tsconfig = None, entry_point = None, testonly = False, de
 
     if not entry_point:
         entry_point = "public_api.ts"
-    ng_module_rule(
-        name = name,
-        flat_module_out_file = name,
-        tsconfig = tsconfig,
-        entry_point = entry_point,
-        testonly = testonly,
-        deps = deps,
-        compiler = _INTERNAL_NG_MODULE_COMPILER,
-        ng_xi18n = _INTERNAL_NG_MODULE_XI18N,
-        # `module_name` is used for AMD module names within emitted JavaScript files.
-        module_name = module_name,
-        # `package_name` can be set to allow for the Bazel NodeJS linker to run. This
-        # allows for resolution of the given target within the `node_modules/`.
-        package_name = package_name,
-        #perf_flag = "//packages/compiler-cli:ng_perf",
-        **kwargs
-    )
+
+    if not local_compilation_mode:
+      ng_module_rule(
+          name = name,
+          srcs = srcs,
+          flat_module_out_file = name,
+          tsconfig = tsconfig,
+          entry_point = entry_point,
+          testonly = testonly,
+          deps = deps,
+          compiler = _INTERNAL_NG_MODULE_COMPILER,
+          ng_xi18n = _INTERNAL_NG_MODULE_XI18N,
+          # `module_name` is used for AMD module names within emitted JavaScript files.
+          module_name = module_name,
+          # `package_name` can be set to allow for the Bazel NodeJS linker to run. This
+          # allows for resolution of the given target within the `node_modules/`.
+          package_name = package_name,
+          #perf_flag = "//packages/compiler-cli:ng_perf",
+          local_compilation_mode = local_compilation_mode,
+          **kwargs
+      )
+    else:
+      subs = [{"name":_to_lcm_target_name(f), "file":f} for f in srcs]
+      for sub in subs:
+          ng_module_rule(
+              name = name + "--" + sub["name"],
+              srcs = [sub["file"]],
+              flat_module_out_file = name + "--" + sub["name"],
+              tsconfig = tsconfig,
+              entry_point = entry_point,
+              testonly = testonly,
+              deps = deps,
+              compiler = _INTERNAL_NG_MODULE_COMPILER,
+              ng_xi18n = _INTERNAL_NG_MODULE_XI18N,
+              # `module_name` is used for AMD module names within emitted JavaScript files.
+              module_name = module_name,
+              # `package_name` can be set to allow for the Bazel NodeJS linker to run. This
+              # allows for resolution of the given target within the `node_modules/`.
+              package_name = package_name,
+              #perf_flag = "//packages/compiler-cli:ng_perf",
+              local_compilation_mode = local_compilation_mode,
+              **kwargs
+          )
+
+      ng_module_rule(
+          name = name,
+          srcs = [],
+          flat_module_out_file = name,
+          tsconfig = tsconfig,
+          entry_point = entry_point,
+          testonly = testonly,
+          deps = [":" + name + "--" + sub["name"] for sub in subs],
+          compiler = _INTERNAL_NG_MODULE_COMPILER,
+          ng_xi18n = _INTERNAL_NG_MODULE_XI18N,
+          # `module_name` is used for AMD module names within emitted JavaScript files.
+          module_name = module_name,
+          # `package_name` can be set to allow for the Bazel NodeJS linker to run. This
+          # allows for resolution of the given target within the `node_modules/`.
+          package_name = package_name,
+          #perf_flag = "//packages/compiler-cli:ng_perf",
+          local_compilation_mode = local_compilation_mode,
+          **kwargs
+      )
+
+def _to_lcm_target_name(filename):
+    return filename.replace("/", "__")
 
 def _default_module_name(testonly):
     """ Provide better defaults for package names.
