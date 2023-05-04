@@ -20,9 +20,6 @@ ng_module_pv(
         "//packages/zone.js/lib",
         "@npm//rxjs",
     ],
-    #tsconfig = "//integration/bazel/bazel-samples/angular-repo-examples:tsconfig.json",
-    #tsconfig = ":tsconfig.json",
-
     local_compilation_mode = LCM,
 )
 
@@ -32,7 +29,7 @@ ts_library(
     srcs = glob(["**/*_spec.ts"]),
     tsconfig = "//packages/examples:tsconfig-e2e.json",
     deps = [
-        "//packages/examples/test-utils",
+        "//integration/bazel/bazel-samples/angular-repo-examples/test-utils",
         "//packages/private/testing",
         "@npm//@types/jasminewd2",
         "@npm//protractor",
