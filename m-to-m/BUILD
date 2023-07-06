@@ -3,7 +3,7 @@ load("//integration/bazel/bazel-samples/bazel:ng_module.bzl", "ng_module_pv")
 
 package(default_visibility = ["//visibility:public"])
 
-LCM = True
+LCM = False
 
 ng_module_pv(
     name = "sub",

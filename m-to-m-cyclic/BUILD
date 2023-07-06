@@ -6,23 +6,12 @@ package(default_visibility = ["//visibility:public"])
 LCM = False
 
 ng_module_pv(
-    name = "sub",
-    srcs = ["sub.ts"],
-    tsconfig = ":tsconfig.json",
-    deps = [
-        "//packages/core",
-    ],
-    local_compilation_mode = LCM,
-)
-
-ng_module_pv(
     name = "main",
     srcs = ["main.ts"],
-    assets = ["main.ng.html"],
     tsconfig = ":tsconfig.json",
     deps = [
-        ":sub",
         "//packages/core",
+        "//packages/common",
     ],
     local_compilation_mode = LCM,
 )

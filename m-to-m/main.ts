@@ -15,6 +15,7 @@ export class Main {
   declarations: [Main],
   imports: [SubModule],
   exports: [Main, SubModule],
+  id: 'some',
 })
 export class MainModule {
 }

@@ -3,12 +3,13 @@ import {NgModule} from '@angular/core';
 import {SubModule} from './sub';
 
 function getImports() {
-  return[SubModule];
+  return [SubModule];
 }
 
 @NgModule({
-  imports: getImports(),
+  imports: [SubModule],
   exports: [SubModule],
+  id: 'haha',
 })
 export class MainModule {
 }

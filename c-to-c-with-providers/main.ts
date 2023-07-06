@@ -1,4 +1,4 @@
-import {Component, NgModule} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 
 import {Sub} from './sub';
 import {StubbedService} from './stubbed-service';
@@ -9,10 +9,11 @@ import {StubbedService} from './stubbed-service';
   selector: 'payam-main',
   templateUrl: './main.ng.html',
   imports: [Sub],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class Main {
-  message = this.stubbedService.getMessage();
+  message = 'haha';//this.stubbedService.getMessage();
 
-  constructor(
-    private stubbedService: StubbedService) {}  
+  //constructor(
+    //private stubbedService: StubbedService) {}
 }
