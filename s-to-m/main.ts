@@ -1,7 +1,10 @@
-import {Component, NgModule} from '@angular/core';
+import {Component, NgModule, Attribute, InjectionToken, Inject, inject, Optional, Pipe} from '@angular/core';
 
-import {SubService} from './sub';
-import Sub2 from './sub2';
+import {SubService} from './sub'
+import SubService2 from './sub2'
+import * as S from './sub3'
+
+export const MESSAGE_TOKEN: InjectionToken<string> = new InjectionToken<string>('MESSAGE_TOKEN');
 
 /** Test component */
 @Component({
@@ -9,11 +12,17 @@ import Sub2 from './sub2';
   templateUrl: './main.ng.html',
 })
 export class Main {
-  message = `${this.subService.getMessage()} ${this.subService2.getMessage()}!`;
+  message = `${this.subService.getMessage()} ${this.subService2.getMessage()}${this.subService3.getMessage()}`;
+
+  x = inject(SubService);
 
   constructor(
     private subService: SubService,
-    private subService2: Sub2.SubService) {}  
+    private subService2: SubService2,
+    private subService3: S.SubService3,
+    @Attribute('title') title: string,
+    @Inject(MESSAGE_TOKEN) tokenMessage: string,
+    ) {}  
 }
 
 @NgModule({
@@ -21,4 +30,25 @@ export class Main {
   exports: [Main],
 })
 export class MainModule {
+  constructor(
+    private subService: SubService,
+    private subService2: SubService2,
+    private subService3: S.SubService3,
+    @Attribute('title') title: string,
+    @Inject(MESSAGE_TOKEN) tokenMessage: string,
+    ) {} 
+}
+
+@Pipe({
+  name: 'pipe',
+  //standalone: true,
+})
+export class MainPipe {         
+  constructor(
+    private subService: SubService,
+    private subService2: SubService2,
+    private subService3: S.SubService3,
+    @Attribute('title') title: string,
+    @Inject(MESSAGE_TOKEN) tokenMessage: string,
+    ) {}  
 }

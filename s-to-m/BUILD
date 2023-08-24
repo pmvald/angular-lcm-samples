@@ -3,7 +3,7 @@ load("//integration/bazel/bazel-samples/bazel:ng_module.bzl", "ng_module_pv")
 
 package(default_visibility = ["//visibility:public"])
 
-LCM = True
+LCM = False
 
 ng_module_pv(
     name = "sub",
@@ -26,6 +26,16 @@ ng_module_pv(
 )
 
 ng_module_pv(
+    name = "sub3",
+    srcs = ["sub3.ts"],
+    tsconfig = ":tsconfig.json",
+    deps = [
+        "//packages/core",
+    ],
+    local_compilation_mode = LCM,
+)
+
+ng_module_pv(
     name = "main",
     srcs = ["main.ts"],
     assets = ["main.ng.html"],
@@ -33,6 +43,7 @@ ng_module_pv(
     deps = [
         ":sub",
         ":sub2",
+        ":sub3",
         "//packages/core",
     ],
     local_compilation_mode = LCM,
