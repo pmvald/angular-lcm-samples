@@ -675,7 +675,7 @@ _DEFAULT_TSCONFIG_TEST = "//packages:tsconfig-test"
 _INTERNAL_NG_MODULE_COMPILER = "//packages/bazel/src/ngc-wrapped"
 _INTERNAL_NG_MODULE_XI18N = "//packages/bazel/src/ngc-wrapped:xi18n"
 
-def ng_module_pv(name, srcs = None,tsconfig = None, entry_point = None, testonly = False, deps = [], module_name = None, package_name = None, local_compilation_mode = False, **kwargs):
+def ng_module_pv(name, srcs = None,tsconfig = None, entry_point = None, testonly = False, deps = [], module_name = None, package_name = None, local_compilation_mode = False, target_level_lcm_mode = False, **kwargs):
     """Default values for ng_module"""
     deps = deps + ["@npm//tslib"]
     if testonly:
@@ -697,7 +697,7 @@ def ng_module_pv(name, srcs = None,tsconfig = None, entry_point = None, testonly
     if not entry_point:
         entry_point = "public_api.ts"
 
-    if not local_compilation_mode:
+    if (not local_compilation_mode) or target_level_lcm_mode:
       ng_module_rule(
           name = name,
           srcs = srcs,
