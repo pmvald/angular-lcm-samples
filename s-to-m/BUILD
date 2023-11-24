@@ -36,6 +36,16 @@ ng_module_pv(
 )
 
 ng_module_pv(
+    name = "sub4",
+    srcs = ["sub4.ts"],
+    tsconfig = ":tsconfig.json",
+    deps = [
+        "//packages/core",
+    ],
+    local_compilation_mode = LCM,
+)
+
+ng_module_pv(
     name = "main",
     srcs = ["main.ts"],
     assets = ["main.ng.html"],
@@ -44,6 +54,7 @@ ng_module_pv(
         ":sub",
         ":sub2",
         ":sub3",
+        ":sub4",
         "//packages/core",
     ],
     local_compilation_mode = LCM,

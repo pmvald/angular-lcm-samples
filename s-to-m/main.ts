@@ -3,6 +3,7 @@ import {Component, NgModule, Attribute, InjectionToken, Inject, inject, Optional
 import {SubService} from './sub'
 import SubService2 from './sub2'
 import * as S from './sub3'
+import S2 from './sub4'
 
 export const MESSAGE_TOKEN: InjectionToken<string> = new InjectionToken<string>('MESSAGE_TOKEN');
 
@@ -12,7 +13,7 @@ export const MESSAGE_TOKEN: InjectionToken<string> = new InjectionToken<string>(
   templateUrl: './main.ng.html',
 })
 export class Main {
-  message = `${this.subService.getMessage()} ${this.subService2.getMessage()}${this.subService3.getMessage()}`;
+  message = `${this.subService.getMessage()} ${this.subService2.getMessage()} ${this.subService3.getMessage()} ${this.subService3.getMessage()}`;
 
   x = inject(SubService);
 
@@ -20,7 +21,8 @@ export class Main {
     private subService: SubService,
     private subService2: SubService2,
     private subService3: S.SubService3,
-    @Attribute('title') title: string,
+    private subService4: S2,
+    //@Attribute('title') title: string,
     @Inject(MESSAGE_TOKEN) tokenMessage: string,
     ) {}  
 }
@@ -34,7 +36,7 @@ export class MainModule {
     private subService: SubService,
     private subService2: SubService2,
     private subService3: S.SubService3,
-    @Attribute('title') title: string,
+    //@Attribute('title') title: string,
     @Inject(MESSAGE_TOKEN) tokenMessage: string,
     ) {} 
 }
@@ -48,7 +50,7 @@ export class MainPipe {
     private subService: SubService,
     private subService2: SubService2,
     private subService3: S.SubService3,
-    @Attribute('title') title: string,
+    //@Attribute('title') title: string,
     @Inject(MESSAGE_TOKEN) tokenMessage: string,
     ) {}  
 }
