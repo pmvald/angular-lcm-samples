@@ -316,6 +316,9 @@ def ngc_compile_action(
 
     return None
 
+def _is_non_js_file(f):
+    return f.extension != "ts" and f.extension != "js" and f.extension != "mjs"
+
 def _filter_ts_inputs(all_inputs):
     # The compiler only needs to see TypeScript sources from the npm dependencies,
     # but may need to look at package.json files as well.
@@ -335,6 +338,13 @@ def _is_output_of(input_file, output_file):
     
     return _get_short_path_without_ext(input_file) == _get_short_path_without_ext(output_file)
 
+def _is_output_of_inputs(input_files, output_file):
+    for f in input_files:
+        if _is_output_of(f, output_file):
+            return True
+
+    return False
+
 def _create_dummy_file_for_non_js_files(ctx, outputs):
     for f in outputs:
         if not _is_non_js_file(f):
@@ -342,9 +352,6 @@ def _create_dummy_file_for_non_js_files(ctx, outputs):
 
         ctx.actions.write(f, "HAHA!")
 
-
-def _is_non_js_file(f):
-    return f.extension != "ts" and f.extension != "js" and f.extension != "mjs"
 
 def _compile_action_lcm(
         ctx,
@@ -355,26 +362,16 @@ def _compile_action_lcm(
         target_flavor):   
     _create_dummy_file_for_non_js_files(ctx, outputs)
 
-    groups = []
+    action_inputs = [f for f in ctx.files.srcs if not f.short_path.endswith(".d.ts")] + ctx.files.assets + [tsconfig_file]
 
-    for input_file in ctx.files.srcs:
-        if input_file.short_path.endswith(".d.ts"):
-            continue
+    group_outputs = [f for f in outputs if _is_output_of_inputs(ctx.files.srcs, f)]
 
-        group_inputs = [input_file, tsconfig_file] + ctx.files.assets
-        group_outputs = [f for f in outputs if _is_output_of(input_file, f)]
+    # additional deps
+    if hasattr(ctx.attr, "node_modules"):
+        action_inputs.extend(_filter_ts_inputs(ctx.files.node_modules))
 
-        # additional deps
-        if hasattr(ctx.attr, "node_modules"):
-            group_inputs.extend(_filter_ts_inputs(ctx.files.node_modules))
+    ngc_compile_action(ctx, ctx.label, action_inputs, group_outputs, tsconfig_file, node_opts, None, [], target_flavor)
 
-        groups.append({
-            "inputs": group_inputs,
-            "outputs": group_outputs,
-        })
-
-    for group in groups:
-        ngc_compile_action(ctx, ctx.label, group["inputs"], group["outputs"], tsconfig_file, node_opts, None, [], target_flavor)
 
 def _compile_action(
         ctx,
